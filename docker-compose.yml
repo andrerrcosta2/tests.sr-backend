@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-dev
+    volumes:
+      - $PWD/data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'
+    restart: unless-stopped
+    networks:
+      - cb
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: user
+      MYSQL_DATABASE: test-app
+      MYSQL_PASSWORD: password
+
+
+  redis:
+    image: redis
+    container_name: redis-dev
+    ports:
+      - '6379:6379'
+    volumes:
+     - $PWD/redis-data:/var/lib/redis
+     - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+     - REDIS_REPLICATION_MODE=master
+    networks:
+      - cb
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 3g 
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - cb
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: test-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+    environment:
+      - CACHE_HOST=redis://redis-dev
+      - DB_HOST=mysql-dev
+      - ELASTIC_HOST=elasticsearch
+    networks:
+      - cb
+
+volumes:
+  mysql_data:
+
+networks:
+  cb:
+    driver: bridge

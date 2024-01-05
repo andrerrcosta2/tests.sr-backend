@@ -1,0 +1,35 @@
+-- Create UserEntity Table
+CREATE TABLE users (
+    id BINARY(36) DEFAULT (UUID_TO_BIN(UUID())),
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    version INTEGER NOT NULL DEFAULT 0,
+    createdAt TIMESTAMP NOT NULL,
+    updatedAt TIMESTAMP NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE wallets (
+    id BINARY(36)  DEFAULT (UUID_TO_BIN(UUID())),
+    userId BINARY(16)  DEFAULT (UUID_TO_BIN(UUID())),
+    balance FLOAT NOT NULL,
+    walletName VARCHAR(255) NOT NULL,
+    version INTEGER NOT NULL DEFAULT 0,
+    createdAt TIMESTAMP NOT NULL,
+    updatedAt TIMESTAMP NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+-- CREATE TABLE t2 (
+--     version INTEGER NOT NULL DEFAULT 0,
+--     id INTEGER NOT NULL,
+--     name VARCHAR(255) NOT NULL,
+--     email VARCHAR(255) UNIQUE NOT NULL,
+--     password VARCHAR(255) NOT NULL,
+--     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     PRIMARY KEY (id)
+-- );

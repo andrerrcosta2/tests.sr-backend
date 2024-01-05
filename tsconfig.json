@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true, // Enable decorators
+    "emitDecoratorMetadata": true, // Emit design-type metadata for decorated declarations in source files
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "rootDir": "src",
+    "types": ["node", "jest"],
+    "typeRoots": ["./types", "./node_modules/@types"]
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules"]
+}
