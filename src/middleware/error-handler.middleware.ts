@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { DiscoverableError } from '../model/error/discoverable.error';
 import { ErrorResponse } from '../model/error/error.response';
-import { dbg } from '../util/log/debug.log';
 import { HttpStatusCode } from 'axios';
 import { winston } from '../_cfg/logger.config';
 import { EntityNotFoundError } from '../model/error/entity-not-found.error';

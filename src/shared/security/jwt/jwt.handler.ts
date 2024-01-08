@@ -11,6 +11,7 @@ import { JWTSignatureProperties } from './model/signature.properties';
 @injectable()
 export class JwtHandler {
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public generateSignedToken = (payload: any, properties: JWTSignatureProperties): string => {
         switch (properties.algorithm) {
             case "RS256":
@@ -22,6 +23,7 @@ export class JwtHandler {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private rsa256Signature = (payload: any, privateKeyPath: string, expiresIn?: number): string => {
         // const privateKeyPath = path.join(__dirname, 'private.pem');
         if (FileUtil.fileExists(privateKeyPath)) {

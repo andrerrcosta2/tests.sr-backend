@@ -57,7 +57,7 @@ export class UserController {
             winston.info("creating new user");
             const result = await this.service.createUser(req.body);
             res.status(HttpStatusCode.Created).json(result);
-        } catch (error: any) {
+        } catch (error: unknown) {
             winston.info(`error creating a new user`, error);
             next(error);
         }

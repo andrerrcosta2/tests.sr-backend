@@ -4,11 +4,14 @@ import { Sequelize, Transaction } from "sequelize";
 import request from 'supertest';
 import { inject, singleton } from "tsyringe";
 import { RedisConfig } from "../../src/_cfg/cache.config";
+import { isDevelopment, isProduction } from "../../src/_cfg/environment.config";
 import { SequelizeConfig } from "../../src/_cfg/sequelize.config";
 import { app } from "../../src/app";
 import { AuthController } from "../../src/controller/auth.controller";
 import { LoginRequest } from "../../src/model/user/login.request";
 import { UserService } from "../../src/service/user.service";
+import { dbg } from "../../src/util/log/debug.log";
+import { TestError } from "../error/test.error";
 
 @singleton()
 export class TestUtil {
@@ -26,19 +29,25 @@ export class TestUtil {
   }
 
   public async syncTables(): Promise<void> {
-    await this.sequelize.sync({ force: true })
-      .then(() => {
-        console.log('Database & tables created!');
-      });
+    try {
+      await this.sequelize.sync({ force: true });
+      dbg('Tables created successfully');
+    } catch (error: unknown) {
+      throw new TestError("Error creating tables: " + (error instanceof Error ? error.message : error as string));
+    }
   }
 
   public async truncateTables(): Promise<void> {
-    await this.sequelize.transaction(async (t: Transaction) => {
-      await this.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { transaction: t });
-      await this.sequelize.truncate({ cascade: true, transaction: t });
-      await this.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', { transaction: t });
+    try {
+      await this.sequelize.transaction(async (t: Transaction) => {
+        if (isDevelopment || isProduction) await this.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { transaction: t });
+        await this.sequelize.truncate({ cascade: true });
+        if (isDevelopment || isProduction) await this.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', { transaction: t });
+      });
 
-    });
+    } catch (error: unknown) {
+      dbg("Error truncating tables", error);
+    }
   }
 
   public get orm(): Sequelize {

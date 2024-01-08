@@ -53,6 +53,7 @@ export class AuthHelper {
             const signatureProperties = this.signatureAdaper.buildJwtSignatureProperties();
             return this.jwtHandler.generateSignedToken(payload, signatureProperties);
         } catch (error: unknown) {
+            winston.unexpected("Error on generating token", error);
             throw error;
         }
     }

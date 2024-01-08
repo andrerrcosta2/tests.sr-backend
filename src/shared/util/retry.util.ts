@@ -3,7 +3,7 @@ export type RetryOptions = {
     delayBetweenAttemptsMs: number;
 };
 
-async function retry<T>(
+export default async function retry<T>(
     operation: () => Promise<T>,
     options: RetryOptions
 ): Promise<T> {
@@ -14,9 +14,9 @@ async function retry<T>(
         } catch (error) {
             attempts++;
             if (attempts === options.maxAttempts) {
-                throw new Error(`Max retry attempts reached (${options.maxAttempts}). Last error: ${error}`);
+                console.debug(`Max retry attempts reached (${options.maxAttempts}). Last error: ${error}`);
+                throw error;
             }
-            // Delay before next attempt
             await new Promise((resolve) => setTimeout(resolve, options.delayBetweenAttemptsMs));
         }
     }

@@ -2,6 +2,7 @@ import { Discover } from "../discover.util";
 
 export class Formatter {
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static error(...message: any[]): FormattedError {
         const filename = Discover.functionCaller();
         const formattedMessage = message.join(':::');

@@ -7,11 +7,14 @@ import { JWTSignatureAdapter } from "../../src/_cfg/adapter/jwt-signature.adapte
 import { app } from "../../src/app";
 import { AuthController } from "../../src/controller/auth.controller";
 import { UserEntity } from "../../src/data-access/user/entity/user.entity";
+import { CreateUserRequest } from "../../src/model/user/create-user.request";
 import { LoginRequest } from "../../src/model/user/login.request";
 import { CacheRepository } from "../../src/repository/cache.repository";
 import { UserService } from "../../src/service/user.service";
 import { JwtHandler } from "../../src/shared/security/jwt/jwt.handler";
+import retry from "../../src/shared/util/retry.util";
 import { dbg } from "../../src/util/log/debug.log";
+import { TestError } from "../error/test.error";
 import '../test.setup';
 import { TestUtil } from "../util/test.util";
 
@@ -31,7 +34,7 @@ afterEach(async () => {
     await util.truncateTables();
 });
 
-describe('UserController', () => {
+describe('auth.controller.test', () => {
     it('shouldn\'t login with a non existing user', async () => {
         const login: LoginRequest
             = {
@@ -81,16 +84,17 @@ describe('UserController', () => {
 
     it('should login with an existing user with correct password and should exist on cache', async () => {
 
-        await userService.createUser({
+        const dto: CreateUserRequest = {
             email: "test2@example.com",
             name: "testuser2",
             password: "testpassword"
-        });
+        };
 
-        const login: LoginRequest
-            = {
-            email: 'test2@example.com',
-            password: 'testpassword'
+        await userService.createUser(dto);
+
+        const login: LoginRequest = {
+            email: dto.email,
+            password: dto.password
         };
 
         const response = await request(app)
@@ -104,7 +108,7 @@ describe('UserController', () => {
         dbg(response.status);
         dbg(response.body);
 
-        if (cookies && cookies.length === 0) throw new Error('Session cookie not found in the response');
+        if (cookies && cookies.length === 0) throw new TestError('Session cookie not found in the response');
 
         const token = util.extractTokenFromCookieString(cookies[0], "session=");
         const signatureAdapter: JWTSignatureAdapter = container.resolve('jwt-signature-adapter');
@@ -113,14 +117,21 @@ describe('UserController', () => {
 
         expect(payload.sub).toEqual(login.email);
 
-        const cached = await userCacheRepository.findById(login.email);
+        // O caching no login é assíncrono
+            retry(async () => {
+                const cached = await userCacheRepository.findById(login.email);
+                expect(cached).toHaveProperty('id');
+                expect(cached).toHaveProperty('email');
+                expect(cached?.email).toEqual(login.email);
 
-        expect(cached).toHaveProperty('id');
-        expect(cached).toHaveProperty('email');
-        expect(cached?.email).toEqual(login.email);
+                expect(response.body).toHaveProperty('message');
+                expect(response.body.message).toEqual('Authentication failed: wrong username or password');
+            }, {
+                maxAttempts: 5,
+                delayBetweenAttemptsMs: 500
+            })
 
-        // expect(response.body).toHaveProperty('message');
-        // expect(response.body.message).toEqual('Authentication failed: wrong username or password');
+
 
     });
 });

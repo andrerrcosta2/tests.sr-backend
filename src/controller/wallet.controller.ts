@@ -56,11 +56,11 @@ export class WalletController {
         try {
             const result = await this.service.createWallet(req.body);
             res.status(HttpStatusCode.Created).json(result);
-        } catch (error: any) {
-            winston.info(`${typeof error} error creating a new wallet`);
+        } catch (error: unknown) {
+            winston.info(`error creating a new wallet`, error);
             next(error);
         }
-    };
+    }
 
     /**
     * @swagger
@@ -106,11 +106,11 @@ export class WalletController {
         try {
             const result = await this.service.addBalanceToWallet(req.body);
             res.status(HttpStatusCode.Ok).json(result);
-        } catch (error: any) {
-            winston.info(`${typeof error} error increasing a wallet balance`);
+        } catch (error: unknown) {
+            winston.info(`error increasing a wallet balance`, error);
             next(error);
         }
-    };
+    }
 
     /**
     * @swagger
@@ -156,11 +156,11 @@ export class WalletController {
         try {
             const result = await this.service.subtractBalanceFromWallet(req.body);
             res.status(HttpStatusCode.Ok).json(result);
-        } catch (error: any) {
-            winston.info(`${typeof error} error subtracting a wallet balance`);
+        } catch (error: unknown) {
+            winston.info(`error subtracting a wallet balance`, error);
             next(error);
         }
-    };
+    }
 
     public static create: string = "/api/wallet/create";
     public static addBalance: string = "/api/wallet/add";

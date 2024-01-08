@@ -23,7 +23,7 @@ afterEach(async () => {
     await util.truncateCacheTables();
 });
 
-describe('UserController', () => {
+describe('user.controller.test', () => {
     it('should create a new user and should be found in cache', async () => {
         const newUser: CreateUserRequest
             = {

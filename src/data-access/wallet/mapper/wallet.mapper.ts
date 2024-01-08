@@ -24,7 +24,7 @@ export class WalletMapper {
         entity.userId = request.userId;
 
         return entity;
-    };
+    }
 
     public walletEntityToCreateWalletResponse(entity: WalletEntity): CreateWalletResponse {
         const output: CreateWalletResponse = {
@@ -33,7 +33,7 @@ export class WalletMapper {
         }
 
         return output;
-    };
+    }
 
     public walletEntityToAddToWalletResponse(entity: WalletEntity): AddToWalletResponse {
         const output: AddToWalletResponse = {

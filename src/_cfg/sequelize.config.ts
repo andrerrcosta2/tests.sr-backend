@@ -20,7 +20,7 @@ export class SequelizeConfig {
     if (isTest || isStaging) {
       this.orm = new Sequelize({
         dialect: 'sqlite',
-        storage: ':memory:',  // Use in-memory SQLite
+        storage: ':memory:',
         logging: this.properties.logging,
         define: this.properties.def,
         models: [UserEntity, WalletEntity],

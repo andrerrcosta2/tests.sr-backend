@@ -5,17 +5,18 @@ import { container } from 'tsyringe';
 import { v4 as uuidv4 } from 'uuid';
 import { app } from "../../src/app";
 import { WalletController } from '../../src/controller/wallet.controller';
+import { UserEntity } from '../../src/data-access/user/entity/user.entity';
 import { WalletRedisRepository } from '../../src/data-access/wallet/adapter/wallet-redis.repository';
 import { WalletCacheKey, WalletEntity } from '../../src/data-access/wallet/entity/wallet.entity';
+import { AddToWalletRequest } from '../../src/model/wallet/add-to-wallet.request';
 import { CreateWalletRequest } from '../../src/model/wallet/create-wallet.request';
+import { SubFromWalletRequest } from '../../src/model/wallet/sub-from-wallet.request';
 import { UserRepository } from '../../src/repository/user.repository';
 import { WalletRepository } from '../../src/repository/wallet.repository';
 import { dbg } from '../../src/util/log/debug.log';
+import { Terminal } from '../../src/util/log/terminal.log';
 import '../test.setup';
 import { TestUtil } from '../util/test.util';
-import { UserEntity } from '../../src/data-access/user/entity/user.entity';
-import { AddToWalletRequest } from '../../src/model/wallet/add-to-wallet.request';
-import { SubFromWalletRequest } from '../../src/model/wallet/sub-from-wallet.request';
 
 const util: TestUtil = container.resolve('test-util');
 const userRepository: UserRepository = container.resolve('user-repository');
@@ -33,9 +34,11 @@ afterEach(async () => {
     await util.truncateCacheTables();
 });
 
-describe('WalletController', () => {
+describe('wallet.controller.test', () => {
 
     it('shouldn\'t create a wallet with a non existing user and shoudn\'t be found in cache', async () => {
+
+        Terminal.title('shouldn\'t create a wallet with a non existing user and shoudn\'t be found in cache', 'start');
 
         const newWallet: CreateWalletRequest = {
             userId: "non-existing-user",
@@ -43,7 +46,11 @@ describe('WalletController', () => {
             walletName: "wallet-test"
         };
 
+        dbg("CreateAuthentication")
+
         const cookies = await util.createAuthentication();
+
+        dbg("After Authentication")
         const authCookies = Array.isArray(cookies) ? cookies : [cookies];
 
         dbg("Cookie", authCookies);
@@ -62,9 +69,13 @@ describe('WalletController', () => {
 
         expect(cachedWallet).toBeNull();
 
+        Terminal.title('shouldn\'t create a wallet with a non existing user and shoudn\'t be found in cache', 'end');
+
     });
 
     it('should create a wallet with an existing user and be found in cache', async () => {
+
+        Terminal.title('should create a wallet with an existing user and be found in cache', 'start');
 
         /**
          * The user won't be found in cache because we are using its repository
@@ -106,18 +117,16 @@ describe('WalletController', () => {
         expect(cachedWallet).toHaveProperty("id");
         expect(cachedWallet?.balance).toEqual(newWallet.balance);
 
+        Terminal.title('should create a wallet with an existing user and be found in cache', 'end');
+
     });
 
     it('should increase balance on wallet and be found in cache', async () => {
 
-        const allWallets: WalletEntity[] = await WalletEntity.findAll();
-
-        dbg("All Wallets", allWallets);
-
-
+        Terminal.title('should increase balance on wallet and be found in cache', 'start');
         /**
          * The user won't be found in cache because we are using its repository
-         * instead the service layer
+         * instead the service layer for brevity
          */
         const userEntity: UserEntity = await userRepository.save(UserEntity.builder()
             .withId(uuidv4())
@@ -164,10 +173,13 @@ describe('WalletController', () => {
         expect(cachedWallet).toHaveProperty("id");
         expect(cachedWallet?.balance).toEqual(response.body.updatedBalance);
 
+        Terminal.title('should increase balance on wallet and be found in cache', 'end');
+
     });
 
     it('shouldn\'t decreasing more than the wallet limit and should not be found in cache', async () => {
 
+        Terminal.title('shouldn\'t decreasing more than the wallet limit and should not be found in cache', 'start');
         /**
          * The user won't be found in cache because we are using its repository
          * instead the service layer
@@ -215,9 +227,13 @@ describe('WalletController', () => {
 
         expect(cachedWallet).toBeNull();
 
+        Terminal.title('shouldn\'t decreasing more than the wallet limit and should not be found in cache', 'end');
+
     });
 
     it('should decrease value less the wallet limit and be found in cache', async () => {
+
+        Terminal.title('should decrease value less the wallet limit and be found in cache', 'start');
 
         const allWallets: WalletEntity[] = await WalletEntity.findAll();
 
@@ -267,6 +283,8 @@ describe('WalletController', () => {
 
         expect(cachedWallet).toHaveProperty("id");
         expect(cachedWallet?.balance).toEqual(response.body.updatedBalance);
+
+        Terminal.title('should decrease value less the wallet limit and be found in cache', 'end');
 
     });
 });

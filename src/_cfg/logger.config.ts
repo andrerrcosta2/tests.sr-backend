@@ -25,7 +25,7 @@ const customLevels = {
 
 
 
-let transports: winston.transport[] = [
+const transports: winston.transport[] = [
   new winston.transports.Console(),
 ];
 
@@ -54,6 +54,7 @@ const logger = winston.createLogger({
 
 
 export const loggerWrapper = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(' ::: ');
@@ -61,6 +62,7 @@ export const loggerWrapper = {
     logger.log('error', msg, { service: filename });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   warning: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(':::');
@@ -68,6 +70,7 @@ export const loggerWrapper = {
     logger.log('warning', msg, { service: filename });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   info: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(':::');
@@ -75,6 +78,7 @@ export const loggerWrapper = {
     logger.log('info', msg, { service: filename });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debug: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(':::');
@@ -82,6 +86,7 @@ export const loggerWrapper = {
     logger.log('debug', msg, { service: filename });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   unexpected: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(':::');
@@ -89,6 +94,7 @@ export const loggerWrapper = {
     logger.log('unexpected', msg, { service: filename });
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   serverError: (...message: any[]) => {
     const filename = Discover.functionCaller(1);
     const formattedMessage = message.join(':::');

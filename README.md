@@ -2,10 +2,27 @@
 
 ## Como rodar?
 
-1. execute $docker compose-up --build para construir a imagem da aplicação e rodar o mysql, redis e elasticsearch.
+1. execute $ docker compose-up --build para construir a imagem da aplicação e rodar o mysql, redis e elasticsearch:
+```bash
+$ docker compose-up --build
+```
+
 2. Acesse localhost:3000/api-docs para acessar o swagger-ui
 3. A aplicação possui um login que retorna um cookie httponly com um token jwt dentro de session=<key-pair>, então é preciso criar um usuário em api/user/register para acessar os wallets
 4. Eu não vou criar roles para associar os usuários às suas respectivas carteiras.
+
+* obs¹. Eu não consegui configurar o @types/ioredis-mock, por isso, se você quizer executar os testes você vai precisar rodar o redis:
+
+```bash
+$ docker-compose up redis
+```
+Lista de testes:
+```bash
+$ npm run test:e2e:user # User Controller e2e tests
+$ npm run test:e2e:wallet # Wallet Controller e2e tests
+$ npm run test:e2e:auth # Auth Controller e2e tests
+$ npm run test:e2e # Todos os e2e tests
+```
 
 ## TODO:
 

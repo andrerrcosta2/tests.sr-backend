@@ -16,7 +16,7 @@ export class RedisConfig {
             // if (isTest) {
             //     this.redisClient = new redisMock();
             // } else {
-            const url: string = `${appProperties.cache?.host}:${appProperties.cache?.port}`;
+            const url: string = `redis://${appProperties.cache?.host}:${appProperties.cache?.port}`;
             this.redisClient = new Redis(url) as RedisInstance;
             // }
 

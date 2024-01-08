@@ -24,7 +24,7 @@ export class UserDetailsHelper {
             try {
                 // lets handle that without await but let's log for possible errors
                 if (entity) {
-                    const cachedsaved = this.userCacheRepository.save(entity);
+                    this.userCacheRepository.save(entity);
                 }
             } catch (error: unknown) {
                 if (error instanceof CacheError) {

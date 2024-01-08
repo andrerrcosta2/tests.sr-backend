@@ -1,4 +1,3 @@
-import { DatabaseConfig } from "./database.config";
 import { CacheProperties } from "./properties/cache.properties";
 import { DataStoreProperties } from "./properties/data-store.properties";
 import { DatabaseProperties } from "./properties/database.properties";

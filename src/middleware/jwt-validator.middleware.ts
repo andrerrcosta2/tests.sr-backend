@@ -17,7 +17,7 @@ export const jwtValidatorMiddleware = (req: Request, res: Response, next: NextFu
     const JwtHandler: JwtHandler = container.resolve("jwt-handler");
     const adapter: JWTSignatureAdapter = container.resolve("jwt-signature-adapter");
 
-    const payload = JwtHandler.verifyToken(token, adapter.buildJwtSignatureProperties()) as JwtPayload;
+    JwtHandler.verifyToken(token, adapter.buildJwtSignatureProperties()) as JwtPayload;
 
     // This test became too big. this is how you can handle roles but i won't do that
     // i'm not implementing a session or a refresh token. it would take too long time

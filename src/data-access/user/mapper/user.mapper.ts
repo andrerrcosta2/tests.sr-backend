@@ -16,7 +16,7 @@ export class UserMapper {
         userEntity.password = createUserRequest.password;
     
         return userEntity;
-    };
+    }
     
     public userEntityToCreateUserResponse(entity: UserEntity): CreateUserResponse {
         const output: CreateUserResponse = {
@@ -24,7 +24,7 @@ export class UserMapper {
         }
     
         return output;
-    };
+    }
 
 }
 

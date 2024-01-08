@@ -64,7 +64,7 @@ export class WalletServiceImpl implements WalletService {
             winston.error("Error persisting wallet", error);
             if (error instanceof CacheError) throw error;
             if (error instanceof ForeignKeyConstraintError)
-                throw new EntityNotFoundError("The user associated with that wallet do not exist");
+                throw new EntityNotFoundError("The user associated with this wallet do not exist");
             throw new DiscoverableError(error, `Failed to persist wallet: ${error}`);
         }
     }

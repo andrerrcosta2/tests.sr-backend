@@ -26,7 +26,7 @@ export class MySqlConfig implements DatabaseConfig {
       throw new ConfigurationError("Database 'dialect' must be declared");
     }
 
-    var output: DatabaseProperties = {
+    const output: DatabaseProperties = {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
@@ -35,5 +35,5 @@ export class MySqlConfig implements DatabaseConfig {
       dialect: process.env.DB_DIALECT
     }
     return output;
-  };
+  }
 }
